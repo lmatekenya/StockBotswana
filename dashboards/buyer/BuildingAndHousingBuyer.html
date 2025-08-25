@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building & Housing - Buyer Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2A6D3F;
+      --primary-dark: #1e5a30;
+      --secondary: #E7B75F;
+      --light-bg: #F8F9FA;
+      --dark-text: #212529;
+      --white: #FFFFFF;
+      --gray: #6C757D;
+      --light-gray: #DEE2E6;
+      --success: #2ECC71;
+      --warning: #F39C12;
+      --danger: #E74C3C;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--light-bg);
+      color: var(--dark-text);
+      line-height: 1.6;
+    }
+
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background: var(--primary);
+      color: white;
+      padding: 20px 0;
+      transition: var(--transition);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--white);
+      border-radius: 8px;
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 20px;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .logo-text span {
+      color: var(--secondary);
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0 15px;
+    }
+
+    .menu-item {
+      margin-bottom: 8px;
+    }
+
+    .menu-item a {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      border-radius: 8px;
+      color: white;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .menu-item a:hover, .menu-item a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-icon {
+      width: 20px;
+      margin-right: 12px;
+      text-align: center;
+    }
+
+    /* Main Content Styles */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--light-gray);
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-info {
+      text-align: right;
+    }
+
+    .user-name {
+      font-weight: 600;
+    }
+
+    .user-role {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .user-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    /* Search and Filters */
+    .search-section {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
+    }
+
+    .search-container {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 12px 15px;
+      border: 1px solid var(--light-gray);
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .search-btn {
+      padding: 12px 20px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .search-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .filter-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      min-width: 180px;
+    }
+
+    .filter-label {
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: var(--gray);
+    }
+
+    .filter-select {
+      padding: 10px;
+      border: 1px solid var(--light-gray);
+      border-radius: 5px;
+      background-color: var(--white);
+    }
+
+    /* Products Grid */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .product-card {
+      background: var(--white);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-image {
+      height: 180px;
+      background-color: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 40px;
+      position: relative;
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background-color: var(--secondary);
+      color: var(--dark-text);
+    }
+
+    .product-content {
+      padding: 20px;
+    }
+
+    .product-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: var(--dark-text);
+    }
+
+    .product-seller {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .seller-avatar {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      margin-right: 8px;
+    }
+
+    .product-price {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+
+    .product-description {
+      color: var(--gray);
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .product-actions {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .action-btn {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .view-btn {
+      background-color: var(--primary);
+      color: white;
+      flex: 1;
+      margin-right: 10px;
+    }
+
+    .view-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .save-btn {
+      background-color: transparent;
+      border: 1px solid var(--light-gray);
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 45px;
+    }
+
+    .save-btn:hover {
+      background-color: var(--light-bg);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .pagination-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 5px;
+      border-radius: 5px;
+      border: 1px solid var(--light-gray);
+      background-color: var(--white);
+      color: var(--dark-text);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pagination-btn:hover, .pagination-btn.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .filter-container {
+        flex-direction: column;
+      }
+
+      .filter-group {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 10px 0;
+      }
+
+      .search-container {
+        flex-direction: column;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+    }
+
+    @media (max-width: 576px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .user-menu {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .product-actions {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .view-btn {
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">
+        <i class="fas fa-home"></i>
+      </div>
+      <div class="logo-text">The <span>Pula</span> Market</div>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li class="menu-item"><a href="#" class="active"><span class="menu-icon"><i class="fas fa-compass"></i></span> Browse</a></li>
+      <li class="menu-item"><a href="#"><span class="menu-icon"><i class="fas fa-heart"></i></span> Saved Items</a></li>
+      <li class="menu-item"><a href="#"><span class="menu-icon"><i class="fas fa-shopping-cart"></i></span> My Orders</a></li>
+      <li class="menu-item"><a href="#"><span class="menu-icon"><i class="fas fa-comments"></i></span> Messages</a></li>
+      <li class="menu-item"><a href="#"><span class="menu-icon"><i class="fas fa-bell"></i></span> Notifications</a></li>
+      <li class="menu-item"><a href="#"><span class="menu-icon"><i class="fas fa-cog"></i></span> Settings</a></li>
+      <li class="menu-item"><a href="#" id="logoutBtn"><span class="menu-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h1 class="page-title">Building & Housing Marketplace</h1>
+      <div class="user-menu">
+        <div class="user-info">
+          <div class="user-name" id="userFullName">Kabelo M.</div>
+          <div class="user-role">Home Builder</div>
+        </div>
+        <div class="user-avatar">KM</div>
+      </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="search-section">
+      <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search for building materials, tools, furniture...">
+        <button class="search-btn">Search</button>
+      </div>
+      <div class="filter-container">
+        <div class="filter-group">
+          <label class="filter-label">Category</label>
+          <select class="filter-select">
+            <option>All Categories</option>
+            <option>Building Materials</option>
+            <option>Tools & Equipment</option>
+            <option>Furniture</option>
+            <option>Home Decor</option>
+            <option>Plumbing</option>
+            <option>Electrical</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Price Range</label>
+          <select class="filter-select">
+            <option>Any Price</option>
+            <option>Under P 500</option>
+            <option>P 500 - P 1,000</option>
+            <option>P 1,000 - P 5,000</option>
+            <option>Over P 5,000</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Location</label>
+          <select class="filter-select">
+            <option>Anywhere</option>
+            <option>Gaborone</option>
+            <option>Francistown</option>
+            <option>Maun</option>
+            <option>Serowe</option>
+            <option>Molepolole</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Sort By</label>
+          <select class="filter-select">
+            <option>Newest First</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Most Popular</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid">
+      <div class="product-card">
+        <div class="product-image">
+          <i class="fas fa-border-all"></i>
+          <span class="product-badge">Popular</span>
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">Quality Cement Blocks</h3>
+          <div class="product-seller">
+            <div class="seller-avatar">TM</div>
+            Tshepo M. (Gaborone)
+          </div>
+          <div class="product-price">P 12.50/block</div>
+          <p class="product-description">High-quality cement blocks perfect for construction projects. Standard size 40cm x 20cm x 20cm.</p>
+          <div class="product-actions">
+            <button class="action-btn view-btn">View Details</button>
+            <button class="action-btn save-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <i class="fas fa-tree"></i>
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">Hardwood Timber</h3>
+          <div class="product-seller">
+            <div class="seller-avatar">BM</div>
+            Bame M. (Maun)
+          </div>
+          <div class="product-price">P 245.00/piece</div>
+          <p class="product-description">Premium quality hardwood timber, treated and ready for use. Length: 3m, Width: 20cm, Thickness: 5cm.</p>
+          <div class="product-actions">
+            <button class="action-btn view-btn">View Details</button>
+            <button class="action-btn save-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <i class="fas fa-tools"></i>
+          <span class="product-badge">Sale</span>
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">Professional Tool Set</h3>
+          <div class="product-seller">
+            <div class="seller-avatar">TS</div>
+            Tool Shop (Francistown)
+          </div>
+          <div class="product-price">P 1,250.00/set</div>
+          <p class="product-description">Complete 45-piece professional tool set including hammer, screwdrivers, wrenches, and more.</p>
+          <div class="product-actions">
+            <button class="action-btn view-btn">View Details</button>
+            <button class="action-btn save-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <i class="fas fa-couch"></i>
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">Modern Living Room Set</h3>
+          <div class="product-seller">
+            <div class="seller-avatar">FH</div>
+            Furniture House (Gaborone)
+          </div>
+          <div class="product-price">P 8,999.00</div>
+          <p class="product-description">Elegant 3+2+1 living room set with coffee table. Available in different colors.</p>
+          <div class="product-actions">
+            <button class="action-btn view-btn">View Details</button>
+            <button class="action-btn save-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <i class="fas fa-tint"></i>
+          <span class="product-badge">New</span>
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">Premium Plumbing Kit</h3>
+          <div class="product-seller">
+            <div class="seller-avatar">PS</div>
+            Plumbing Supplies (Francistown)
+          </div>
+          <div class="product-price">P 2,350.00</div>
+          <p class="product-description">Complete plumbing kit with pipes, connectors, and tools for home plumbing projects.</p>
+          <div class="product-actions">
+            <button class="action-btn view-btn">View Details</button>
+            <button class="action-btn save-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <i class="fas fa-lightbulb"></i>
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">LED Lighting Package</h3>
+          <div class="product-seller">
+            <div class="seller-avatar">ES</div>
+            Electrical Solutions (Gaborone)
+          </div>
+          <div class="product-price">P 1,899.00</div>
+          <p class="product-description">Energy-efficient LED lighting package for home or office. Includes 20 bulbs with different wattages.</p>
+          <div class="product-actions">
+            <button class="action-btn view-btn">View Details</button>
+            <button class="action-btn save-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button class="pagination-btn"><i class="fas fa-chevron-left"></i></button>
+      <button class="pagination-btn active">1</button>
+      <button class="pagination-btn">2</button>
+      <button class="pagination-btn">3</button>
+      <button class="pagination-btn">4</button>
+      <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Function to get the current user from session storage
+  function getCurrentUser() {
+    const userData = sessionStorage.getItem('currentUser');
+    if (!userData) {
+      // If no user is logged in, redirect to login page
+      window.location.href = '../index.html';
+      return null;
+    }
+    return JSON.parse(userData);
+  }
+
+  // Function to display user information
+  function displayUserInfo() {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    // Display user's full name
+    document.getElementById('userFullName').textContent = user.fullName;
+
+    // Create and display avatar with user's initials
+    const avatarElements = document.querySelectorAll('.user-avatar');
+    const names = user.fullName.split(' ');
+    let initials = '';
+
+    if (names.length === 1) {
+      initials = names[0].charAt(0);
+    } else {
+      initials = names[0].charAt(0) + names[names.length - 1].charAt(0);
+    }
+
+    avatarElements.forEach(element => {
+      element.textContent = initials.toUpperCase();
+    });
+  }
+
+  // Toggle saved state for products
+  function setupSaveButtons() {
+    const saveButtons = document.querySelectorAll('.save-btn');
+    saveButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const icon = this.querySelector('i');
+        if (icon.classList.contains('far')) {
+          icon.classList.remove('far');
+          icon.classList.add('fas');
+          this.style.color = 'var(--danger)';
+        } else {
+          icon.classList.remove('fas');
+          icon.classList.add('far');
+          this.style.color = 'var(--gray)';
+        }
+      });
+    });
+  }
+
+  // View product details
+  function setupViewButtons() {
+    const viewButtons = document.querySelectorAll('.view-btn');
+    viewButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const productTitle = this.closest('.product-content').querySelector('.product-title').textContent;
+        alert(`Viewing details for: ${productTitle}\n\nThis would open a detailed product view in a real application.`);
+      });
+    });
+  }
+
+  // Logout function
+  function logout() {
+    sessionStorage.removeItem('currentUser');
+    window.location.href = '../index.html';
+  }
+
+  // Initialize the page
+  document.addEventListener('DOMContentLoaded', function() {
+    // Display user information
+    displayUserInfo();
+
+    // Setup save buttons functionality
+    setupSaveButtons();
+
+    // Setup view buttons functionality
+    setupViewButtons();
+
+    // Add logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      logout();
+    });
+
+    // Add active class to clicked menu items
+    const menuItems = document.querySelectorAll('.menu-item a');
+    menuItems.forEach(item => {
+      item.addEventListener('click', function(e) {
+        if (this.id === 'logoutBtn') return;
+
+        e.preventDefault();
+        menuItems.forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Search functionality
+    const searchBtn = document.querySelector('.search-btn');
+    searchBtn.addEventListener('click', function() {
+      const searchInput = document.querySelector('.search-input');
+      alert(`Searching for: ${searchInput.value}\n\nThis would perform a real search in a full application.`);
+    });
+  });
+</script>
+</body>
+</html>
